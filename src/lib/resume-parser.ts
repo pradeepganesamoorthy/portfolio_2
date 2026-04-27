@@ -1,3 +1,6 @@
+import pdfParse from 'pdf-parse'
+declare module 'pdf-parse';
+
 export interface ParsedResume {
   name?: string
   title?: string
