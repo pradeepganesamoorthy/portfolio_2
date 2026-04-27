@@ -1,0 +1,10 @@
+.env
+.env.local
+.next/
+node_modules/
+public/uploads/*.pdf
+public/uploads/*.docx
+public/uploads/resume_*
+*.log
+.DS_Store
+dist/

@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  isDefault Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Portfolio {
+  id          String    @id @default(cuid())
+  section     String
+  key         String
+  draftValue  Json
+  liveValue   Json?
+  isDraft     Boolean   @default(true)
+  order       Int       @default(0)
+  visible     Boolean   @default(true)
+  updatedAt   DateTime  @updatedAt
+  publishedAt DateTime?
+
+  @@unique([section, key])
+  @@index([section])
+}
+
+model ResumeFile {
+  id          String   @id @default(cuid())
+  filename    String
+  path        String
+  mimeType    String
+  isPublished Boolean  @default(false)
+  uploadedAt  DateTime @default(now())
+}
+
+model GithubConfig {
+  id            String   @id @default(cuid())
+  username      String
+  pinnedOnly    Boolean  @default(false)
+  excludeRepos  String[] @default([])
+  featuredRepos String[] @default([])
+  sortBy        String   @default("updated")
+  showLanguage  Boolean  @default(true)
+  showStars     Boolean  @default(true)
+  updatedAt     DateTime @updatedAt
+}
+
+model ProfileImage {
+  id         String   @id @default(cuid())
+  filename   String
+  path       String
+  type       String
+  uploadedAt DateTime @default(now())
+}
