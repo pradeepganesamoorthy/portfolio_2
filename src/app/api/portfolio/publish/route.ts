@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { requireAdmin } from '@/lib/auth'
+import { Prisma } from "@prisma/client"
 
 export async function POST(req: NextRequest) {
   const session = await requireAdmin().catch(() => null)
@@ -17,7 +18,11 @@ export async function POST(req: NextRequest) {
     for (const item of allItems) {
       await prisma.portfolio.update({
         where: { id: item.id },
-        data: { liveValue: item.draftValue, isDraft: false, publishedAt: new Date() },
+        data: {
+          liveValue: item.draftValue === null ? Prisma.JsonNull : item.draftValue,
+          isDraft: false,
+          publishedAt: new Date(),
+        },
       })
     }
   } else if (ids?.length) {
@@ -26,7 +31,11 @@ export async function POST(req: NextRequest) {
       if (item) {
         await prisma.portfolio.update({
           where: { id },
-          data: { liveValue: item.draftValue, isDraft: false, publishedAt: new Date() },
+         data: {
+          liveValue: item.draftValue === null ? Prisma.JsonNull : item.draftValue,
+          isDraft: false,
+          publishedAt: new Date(),
+        },
         })
       }
     }
