@@ -31,7 +31,7 @@ function AdminDashboard() {
   const [newUsername, setNewUsername] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [credMsg, setCredMsg] = useState('')
-  const [activeTab, setActiveTab] = useState<'content'|'github'|'resume'|'images'|'settings'>('content')
+  const [activeTab, setActiveTab] = useState<'content'|'github'|'resume'|'images'|'videos'|'settings'>('content')
   const [githubUsername, setGithubUsername] = useState('')
   const [githubSaved, setGithubSaved] = useState(false)
   const [resumeFile, setResumeFile] = useState<File | null>(null)
@@ -50,6 +50,17 @@ function AdminDashboard() {
   const [newSectionName, setNewSectionName] = useState('')
   const [newItemKey, setNewItemKey] = useState('')
   const [newItemValue, setNewItemValue] = useState('{}')
+
+  // Video states
+  const [videos, setVideos] = useState<any[]>([])
+  const [videoType, setVideoType] = useState<'intro' | 'project'>('project')
+  const [videoTitle, setVideoTitle] = useState('')
+  const [videoDescription, setVideoDescription] = useState('')
+  const [videoYoutubeUrl, setVideoYoutubeUrl] = useState('')
+  const [videoProjectName, setVideoProjectName] = useState('')
+  const [videoUploading, setVideoUploading] = useState(false)
+  const [videoMsg, setVideoMsg] = useState('')
+  const [editingVideo, setEditingVideo] = useState<any>(null)
 
   const forceChange = searchParams.get('changeCredentials') === '1'
   const sections = ['hero', 'about', 'skills', 'experience', 'projects', 'certifications', 'education', 'contact', 'awards']
@@ -87,6 +98,15 @@ function AdminDashboard() {
       .then(r => r.json())
       .then(d => d.config?.username && setGithubUsername(d.config.username))
   }, [])
+
+  // Fetch videos
+  useEffect(() => {
+    if (admin) {
+      fetch('/api/videos')
+        .then(r => r.json())
+        .then(d => setVideos(d.videos || []))
+    }
+  }, [admin])
 
   const sectionItems = items.filter(i => i.section === activeSection)
 
@@ -275,7 +295,7 @@ function AdminDashboard() {
           <span style={{ color: 'var(--accent-warm)' }}>P</span>G Admin
         </div>
 
-        {(['content', 'github', 'resume', 'images', 'settings'] as const).map(tab => (
+        {(['content', 'github', 'resume', 'images', 'videos', 'settings'] as const).map(tab => (
           <button key={tab} style={styles.sideBtn(activeTab === tab)} onClick={() => setActiveTab(tab)}>
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
           </button>
@@ -442,6 +462,306 @@ function AdminDashboard() {
                 </p>
               )}
             </div>
+          </div>
+        )}
+
+        {activeTab === 'videos' && (
+          <div style={{ maxWidth: '900px' }}>
+            <h1 style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>Video Management</h1>
+
+            <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
+              <button
+                onClick={() => setVideoType('intro')}
+                style={{
+                  padding: '0.5rem 1.5rem',
+                  borderRadius: 'var(--radius-md)',
+                  border: `1px solid ${videoType === 'intro' ? 'var(--accent-warm)' : 'var(--border)'}`,
+                  background: videoType === 'intro' ? 'var(--accent-warm)' : 'var(--bg-subtle)',
+                  color: videoType === 'intro' ? 'white' : 'var(--fg)',
+                  cursor: 'pointer',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.85rem',
+                }}
+              >
+                Introduction Video
+              </button>
+              <button
+                onClick={() => setVideoType('project')}
+                style={{
+                  padding: '0.5rem 1.5rem',
+                  borderRadius: 'var(--radius-md)',
+                  border: `1px solid ${videoType === 'project' ? 'var(--accent-warm)' : 'var(--border)'}`,
+                  background: videoType === 'project' ? 'var(--accent-warm)' : 'var(--bg-subtle)',
+                  color: videoType === 'project' ? 'white' : 'var(--fg)',
+                  cursor: 'pointer',
+                  fontFamily: 'var(--font-mono)',
+                  fontSize: '0.85rem',
+                }}
+              >
+                Project Videos
+              </button>
+            </div>
+
+            <div className="card" style={{ marginBottom: '2rem' }}>
+              <h3 style={{ marginBottom: '1.5rem', fontSize: '1rem' }}>
+                {editingVideo ? 'Edit Video' : `Add New ${videoType === 'intro' ? 'Introduction' : 'Project'} Video`}
+              </h3>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <div>
+                  <label>YouTube URL *</label>
+                  <input
+                    value={videoYoutubeUrl}
+                    onChange={e => setVideoYoutubeUrl(e.target.value)}
+                    placeholder="https://youtube.com/watch?v=... or https://youtu.be/..."
+                  />
+                  <p style={{ fontSize: '0.75rem', color: 'var(--fg-subtle)', marginTop: '0.25rem' }}>
+                    Paste the full YouTube URL. Works with youtube.com/watch or youtu.be links.
+                  </p>
+                </div>
+
+                <div>
+                  <label>Title *</label>
+                  <input
+                    value={videoTitle}
+                    onChange={e => setVideoTitle(e.target.value)}
+                    placeholder={videoType === 'intro' ? 'My Introduction' : 'Project Demo'}
+                  />
+                </div>
+
+                {videoType === 'project' && (
+                  <div>
+                    <label>Project Name</label>
+                    <input
+                      value={videoProjectName}
+                      onChange={e => setVideoProjectName(e.target.value)}
+                      placeholder="ETL Pipeline Project"
+                    />
+                  </div>
+                )}
+
+                <div>
+                  <label>Description</label>
+                  <textarea
+                    value={videoDescription}
+                    onChange={e => setVideoDescription(e.target.value)}
+                    placeholder="Brief description of the video content..."
+                    style={{ minHeight: '100px' }}
+                  />
+                </div>
+
+                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                  <button
+                    onClick={async () => {
+                      if (!videoYoutubeUrl || !videoTitle) {
+                        setVideoMsg('YouTube URL and Title are required')
+                        return
+                      }
+
+                      setVideoUploading(true)
+                      setVideoMsg('')
+
+                      const body: any = {
+                        type: videoType,
+                        title: videoTitle,
+                        description: videoDescription,
+                        youtubeUrl: videoYoutubeUrl,
+                        projectName: videoProjectName,
+                        order: videos.filter(v => v.type === videoType).length,
+                      }
+
+                      if (editingVideo) {
+                        body.id = editingVideo.id
+                      }
+
+                      const res = await fetch('/api/videos', {
+                        method: editingVideo ? 'PUT' : 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(body),
+                      })
+
+                      const data = await res.json()
+
+                      if (data.success) {
+                        setVideoMsg(editingVideo ? 'Video updated!' : 'Video added! Click Publish All to make it live.')
+                        setVideoTitle('')
+                        setVideoDescription('')
+                        setVideoYoutubeUrl('')
+                        setVideoProjectName('')
+                        setEditingVideo(null)
+                        fetch('/api/videos').then(r => r.json()).then(d => setVideos(d.videos || []))
+                      } else {
+                        setVideoMsg(data.error || 'Failed to save video')
+                      }
+
+                      setVideoUploading(false)
+                    }}
+                    disabled={videoUploading}
+                    className="btn btn-warm"
+                  >
+                    {videoUploading ? 'Saving...' : editingVideo ? 'Update Video' : 'Add Video'}
+                  </button>
+
+                  {editingVideo && (
+                    <button
+                      onClick={() => {
+                        setEditingVideo(null)
+                        setVideoTitle('')
+                        setVideoDescription('')
+                        setVideoYoutubeUrl('')
+                        setVideoProjectName('')
+                      }}
+                      className="btn btn-outline"
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
+
+                {videoMsg && (
+                  <p style={{ color: videoMsg.includes('Failed') ? '#e24b4a' : 'var(--accent-warm)', fontSize: '0.85rem', fontFamily: 'var(--font-mono)' }}>
+                    {videoMsg}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <h3 style={{ marginBottom: '1rem', fontSize: '1rem' }}>
+                {videoType === 'intro' ? 'Introduction Video' : 'Project Videos'} ({videos.filter((v: any) => v.type === videoType).length})
+              </h3>
+
+              {videos.filter((v: any) => v.type === videoType).length === 0 ? (
+                <p style={{ color: 'var(--fg-muted)', fontFamily: 'var(--font-mono)', fontSize: '0.85rem' }}>
+                  No {videoType} videos yet. Add one above.
+                </p>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {videos.filter((v: any) => v.type === videoType).map((video: any) => (
+                    <div key={video.id} style={styles.itemCard}>
+                      <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                        <div style={{
+                          width: '160px',
+                          height: '90px',
+                          borderRadius: 'var(--radius-sm)',
+                          overflow: 'hidden',
+                          flexShrink: 0,
+                          background: 'var(--bg-subtle)',
+                        }}>
+                          <img
+                            src={`https://img.youtube.com/vi/${video.youtubeId}/mqdefault.jpg`}
+                            alt={video.title}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          />
+                        </div>
+
+                        <div style={{ flex: 1 }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
+                            <div>
+                              <h4 style={{ fontSize: '1rem', fontWeight: 600, marginBottom: '0.25rem' }}>{video.title}</h4>
+                              {video.projectName && (
+                                <span style={{
+                                  fontFamily: 'var(--font-mono)',
+                                  fontSize: '0.7rem',
+                                  color: 'var(--accent-warm)',
+                                }}>
+                                  {video.projectName}
+                                </span>
+                              )}
+                            </div>
+                            {video.isDraft && (
+                              <span style={{
+                                fontFamily: 'var(--font-mono)',
+                                fontSize: '0.68rem',
+                                color: '#e07840',
+                                background: '#e0784020',
+                                padding: '0.1rem 0.5rem',
+                                borderRadius: '100px',
+                              }}>
+                                draft
+                              </span>
+                            )}
+                          </div>
+
+                          {video.description && (
+                            <p style={{ fontSize: '0.85rem', color: 'var(--fg-muted)', marginBottom: '0.75rem', lineHeight: 1.5 }}>
+                              {video.description}
+                            </p>
+                          )}
+
+                          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                            <button
+                              onClick={() => {
+                                setEditingVideo(video)
+                                setVideoTitle(video.title)
+                                setVideoDescription(video.description || '')
+                                setVideoYoutubeUrl(video.youtubeUrl)
+                                setVideoProjectName(video.projectName || '')
+                                setVideoType(video.type)
+                                window.scrollTo({ top: 0, behavior: 'smooth' })
+                              }}
+                              className="btn btn-outline"
+                              style={{ padding: '0.3rem 0.75rem', fontSize: '0.75rem' }}
+                            >
+                              edit
+                            </button>
+                            <button
+                              onClick={async () => {
+                                if (!confirm('Delete this video?')) return
+                                await fetch(`/api/videos?id=${video.id}`, { method: 'DELETE' })
+                                fetch('/api/videos').then(r => r.json()).then(d => setVideos(d.videos || []))
+                              }}
+                              style={{
+                                padding: '0.3rem 0.75rem',
+                                fontSize: '0.75rem',
+                                background: 'none',
+                                border: '1px solid var(--border)',
+                                borderRadius: 'var(--radius-sm)',
+                                cursor: 'pointer',
+                                color: '#e24b4a',
+                              }}
+                            >
+                              delete
+                            </button>
+                            <a
+                              href={video.youtubeUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="btn btn-outline"
+                              style={{ padding: '0.3rem 0.75rem', fontSize: '0.75rem' }}
+                            >
+                              view on YouTube ↗
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {videos.some((v: any) => v.isDraft) && (
+              <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'var(--bg-subtle)', borderRadius: 'var(--radius-lg)' }}>
+                <p style={{ fontSize: '0.85rem', color: 'var(--fg-muted)', marginBottom: '1rem' }}>
+                  You have {videos.filter((v: any) => v.isDraft).length} draft video(s). Publish them to make them visible on the portfolio.
+                </p>
+                <button
+                  onClick={async () => {
+                    await fetch('/api/videos/publish', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ publishAll: true }),
+                    })
+                    fetch('/api/videos').then(r => r.json()).then(d => setVideos(d.videos || []))
+                    setVideoMsg('All videos published!')
+                  }}
+                  className="btn btn-warm"
+                >
+                  Publish All Videos
+                </button>
+              </div>
+            )}
           </div>
         )}
 
