@@ -85,3 +85,43 @@ model VideoConfig {
   autoplay     Boolean @default(false)
   showControls Boolean @default(true)
 }
+
+model ThemeConfig {
+  id                String   @id @default(cuid())
+  primaryColor      String   @default("#c77dff")
+  secondaryColor    String   @default("#4d96ff")
+  accentColor       String   @default("#ff6b6b")
+  navbarBgColor     String   @default("rgba(0,0,0,0.8)")
+  textColor         String   @default("#ffffff")
+  hoverColor        String   @default("#ffd93d")
+  themePreset       String   @default("custom")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now()) @updatedAt
+  sectionFontColors String   @default("{}")
+}
+
+model AnimationConfig {
+  id                String   @id @default(cuid())
+  selectedAnimation String   @default("particles-torus")
+  animationSpeed    String   @default("normal")
+  useThemeColors    Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now()) @updatedAt
+}
+
+model Badge {
+  id          String   @id @default(cuid())
+  section     String
+  name        String
+  type        String   @default("preset")
+  iconName    String?
+  customImage String?
+  color       String?
+  order       Int      @default(0)
+  visible     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  @@index([section])
+  @@index([order])
+}

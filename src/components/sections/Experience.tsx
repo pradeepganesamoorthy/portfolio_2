@@ -2,10 +2,16 @@
 import { useState } from 'react'
 import { usePortfolio } from '@/hooks/usePortfolio'
 
-const TIMELINE_COLORS = ['#ff6b6b', '#ffd93d', '#6bcb77']
+const TIMELINE_COLORS = ['#3ddc97','#6ee7b7','#237a57','#a7f3d0','#0d5c40']
 
 export function Experience() {
-  const { items, loading } = usePortfolio('experience')
+  const { items: rawItems, loading } = usePortfolio('experience')
+  // Sort by order descending so TCS (most recent) appears first
+  const items = [...rawItems].sort((a, b) => {
+    const ao = (a as any).order ?? 0
+    const bo = (b as any).order ?? 0
+    return bo - ao
+  })
   const [hovered, setHovered] = useState<string | null>(null)
 
   return (

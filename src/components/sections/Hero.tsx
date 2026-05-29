@@ -68,27 +68,27 @@ export function Hero() {
       <Scene />
 
       <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1 }}>
-        <div style={{
+        <div className="pg-glow-top" style={{
           position: 'absolute',
           top: '-10%', right: '-5%',
           width: '600px', height: '600px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(199,125,255,0.18) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(61,220,151,0.18) 0%, transparent 70%)',
           animation: 'glowPulse 6s ease-in-out infinite',
           filter: 'blur(40px)',
         }} />
-        <div style={{
+        <div className="pg-glow-bot" style={{
           position: 'absolute',
           bottom: '-10%', left: '-10%',
           width: '500px', height: '500px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(77,150,255,0.15) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(35,122,87,0.15) 0%, transparent 70%)',
           animation: 'glowPulse 8s ease-in-out infinite 2s',
           filter: 'blur(50px)',
         }} />
       </div>
 
-      <div className="grid-bg" style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none' }} />
+      <div className="" style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none' }} />
 
       {introVideo && showVideo && (
         <div style={{
@@ -177,18 +177,19 @@ export function Hero() {
           maxWidth: '860px',
         }}>
           <div style={{ marginBottom: '2rem', animation: visible ? 'fadeUp 0.8s ease both' : 'none' }}>
-            <span style={{
+            <span className="pg-hire-badge" style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.5rem',
               padding: '0.4rem 1rem',
               borderRadius: '100px',
-              background: 'linear-gradient(135deg, rgba(199,125,255,0.15), rgba(77,150,255,0.15))',
+              background: 'linear-gradient(135deg, rgba(199,125,255,0.15), rgba(35,122,87,0.15))',
               border: '1px solid rgba(199,125,255,0.3)',
               fontFamily: 'var(--font-mono)',
               fontSize: '0.72rem',
               letterSpacing: '0.1em',
-              color: '#c77dff',
+              color: 'var(--theme-primary, #3ddc97)',
+              transition: 'all 0.4s ease',
             }}>
               <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#6bcb77', display: 'inline-block', boxShadow: '0 0 6px #6bcb77' }} />
               AVAILABLE FOR HIRE
@@ -201,15 +202,16 @@ export function Hero() {
             lineHeight: 1,
             animation: visible ? 'fadeUp 0.8s ease 0.1s both' : 'none',
           }}>
-            {firstName}
+            <span className="gradient-text">{firstName}</span>
           </h1>
-          <h1 style={{
+          <h1 className="hero-name-last" style={{
             fontSize: 'clamp(3.5rem, 8vw, 7rem)',
             marginBottom: '1.5rem',
             lineHeight: 1,
             animation: visible ? 'fadeUp 0.8s ease 0.2s both' : 'none',
+            color: 'var(--fg)',
           }}>
-            <span className="gradient-text">{lastName}</span>
+            {lastName}
           </h1>
 
           <div style={{
@@ -258,23 +260,16 @@ export function Hero() {
             animation: visible ? 'fadeUp 0.8s ease 0.6s both' : 'none',
           }}>
             {[
-              { value: '6+', label: 'Years', color: '#ff6b6b' },
-              { value: '3', label: 'Companies', color: '#ffd93d' },
-              { value: '6', label: 'Awards', color: '#6bcb77' },
-              { value: '40%', label: 'Speed gain', color: '#c77dff' },
+              { value: '6+', label: 'Years',      cls: 'pg-stat-0' },
+              { value: '3',  label: 'Companies',  cls: 'pg-stat-1' },
+              { value: '6',  label: 'Awards',     cls: 'pg-stat-2' },
+              { value: '40%',label: 'Speed gain', cls: 'pg-stat-3' },
             ].map(stat => (
               <div key={stat.label}>
-                <div style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: '2rem',
-                  fontWeight: 800,
-                  color: stat.color,
-                  lineHeight: 1,
-                  textShadow: `0 0 20px ${stat.color}60`,
-                }}>
+                <div className={stat.cls}>
                   {stat.value}
                 </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--fg-subtle)', letterSpacing: '0.08em', marginTop: '0.2rem' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.7rem', color: 'var(--fg-muted)', letterSpacing: '0.08em', marginTop: '0.3rem' }}>
                   {stat.label.toUpperCase()}
                 </div>
               </div>

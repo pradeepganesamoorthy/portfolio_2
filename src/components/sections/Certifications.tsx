@@ -3,8 +3,8 @@ import { usePortfolio } from '@/hooks/usePortfolio'
 
 const ISSUER_THEMES: Record<string, { color: string; bg: string }> = {
   Oracle:      { color: '#ff6b6b', bg: 'rgba(255,107,107,0.1)' },
-  Google:      { color: '#4d96ff', bg: 'rgba(77,150,255,0.1)' },
-  Udemy:       { color: '#c77dff', bg: 'rgba(199,125,255,0.1)' },
+  Google:      { color: 'var(--theme-secondary,#237a57)', bg: 'rgba(35,122,87,0.1)' },
+  Udemy:       { color: 'var(--theme-primary,#3ddc97)', bg: 'rgba(61,220,151,0.1)' },
   Credly:      { color: '#6bcb77', bg: 'rgba(107,203,119,0.1)' },
   Dataisgood:  { color: '#ffd93d', bg: 'rgba(255,217,61,0.1)' },
 }

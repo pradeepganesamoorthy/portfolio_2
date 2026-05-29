@@ -1,7 +1,7 @@
 'use client'
 import { usePortfolio } from '@/hooks/usePortfolio'
 
-const AWARD_COLORS = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#c77dff', '#ff9a3c']
+const AWARD_COLORS = ['#ff6b6b', '#ffd93d', '#6bcb77', 'var(--theme-secondary,#237a57)', 'var(--theme-primary,#3ddc97)', '#ff9a3c']
 
 export function Awards() {
   const { items, loading } = usePortfolio('awards')

@@ -3,6 +3,7 @@ import { usePortfolio } from '@/hooks/usePortfolio'
 import Image from 'next/image'
 
 const STAT_COLORS = ['#ff6b6b', '#ffd93d', '#6bcb77', '#c77dff']
+const STAT_CLASSES = ['pg-stat-0','pg-stat-1','pg-stat-2','pg-stat-3']
 
 export function About() {
   const { getValue, loading } = usePortfolio('about')
@@ -11,12 +12,32 @@ export function About() {
     phone?: string; linkedin?: string; github?: string; profileImage?: string
   } | null
 
-  const stats = [
-    { value: '6+', label: 'Years exp' },
-    { value: '3', label: 'Companies' },
-    { value: '6', label: 'TCS awards' },
-    { value: '40%', label: 'Speed gain' },
-  ]
+  const stats: {
+  value: string
+  label: string
+  detail?: string
+}[] = [
+  {
+    value: '6+',
+    label: 'Years exp',
+    detail: 'Python • SQL • Data Engineering',
+  },
+  {
+    value: '3',
+    label: 'Companies',
+    detail: 'TCS • NHM Tech • SathyaSaran',
+  },
+  {
+    value: '6',
+    label: 'TCS awards',
+    detail: 'Recognition for delivery',
+  },
+  {
+    value: '40%',
+    label: 'Speed gain',
+    detail: 'ETL optimization',
+  },
+]
 
   return (
     <section id="about" className="section-pad" style={{ position: 'relative', overflow: 'hidden' }}>
@@ -30,7 +51,7 @@ export function About() {
       <div className="container" style={{ position: 'relative', zIndex: 1 }}>
         <div style={{ marginBottom: '3rem' }}>
           <span className="section-label">About me</span>
-          <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', marginTop: '0.75rem' }}>
+          <h2 className="about-heading-glow" style={{ fontSize: 'clamp(2rem, 4vw, 3rem)', marginTop: '0.75rem' }}>
             Turning raw data into<br />
             <span className="gradient-text">reliable insight</span>
           </h2>
@@ -72,15 +93,15 @@ export function About() {
               </div>
             )}
 
-            <p style={{ fontSize: 'clamp(0.95rem, 2vw, 1.05rem)', lineHeight: 1.8, color: 'var(--fg-muted)', marginBottom: '2rem' }}>
+            <p style={{ fontSize: 'clamp(0.95rem, 2vw, 1.05rem)', lineHeight: 1.8, color: 'var(--fg-muted)', marginBottom: '2rem' } } className="text-muted">
               {loading ? 'Loading...' : about?.bio}
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {[
-                { label: 'Location', value: about?.location, icon: '◎', color: '#ff6b6b' },
-                { label: 'Email', value: about?.email, icon: '✉', color: '#4d96ff' },
-                { label: 'Phone', value: about?.phone, icon: '◉', color: '#6bcb77' },
+                { label: 'Location', value: about?.location, icon: '◎', color: 'var(--theme-accent,#ff6b6b)' },
+                { label: 'Email', value: about?.email, icon: '✉', color: 'var(--theme-secondary,#4d96ff)' },
+                { label: 'Phone', value: about?.phone, icon: '◉', color: 'var(--theme-hover,#6bcb77)' },
               ].map(item => item.value && (
                 <div key={item.label} style={{
                   display: 'flex', alignItems: 'center', gap: '0.75rem',
@@ -109,26 +130,50 @@ export function About() {
 
           <div className="grid-2">
             {stats.map((stat, i) => (
-              <div key={stat.label} className="card" style={{
-                textAlign: 'center', padding: 'clamp(1.25rem, 3vw, 1.75rem) 1rem',
-                position: 'relative', overflow: 'hidden',
-              }}>
-                <div style={{
-                  position: 'absolute', inset: 0,
-                  background: `radial-gradient(circle at center, ${STAT_COLORS[i]}08 0%, transparent 70%)`,
-                  pointerEvents: 'none',
-                }} />
-                <div style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 'clamp(2rem, 5vw, 2.8rem)', fontWeight: 800,
-                  color: STAT_COLORS[i],
-                  lineHeight: 1, marginBottom: '0.5rem',
-                  textShadow: `0 0 24px ${STAT_COLORS[i]}50`,
-                }}>
-                  {stat.value}
-                </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 'clamp(0.65rem, 1.5vw, 0.72rem)', color: 'var(--fg-subtle)', letterSpacing: '0.08em' }}>
-                  {stat.label.toUpperCase()}
+              <div key={stat.label} className="flip-card" style={{ height: 'clamp(120px, 18vw, 160px)' }}>
+                <div className="flip-inner">
+                  {/* Front — value + label */}
+                  <div className="flip-front" style={{ textAlign: 'center', overflow: 'hidden' }}>
+                    <div style={{
+                      position: 'absolute', inset: 0,
+                      background: `radial-gradient(circle at center, ${STAT_COLORS[i]}12 0%, transparent 70%)`,
+                      pointerEvents: 'none',
+                    }} />
+                    <div className={STAT_CLASSES[i]}>{stat.value}</div>
+                    <div style={{
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: 'clamp(0.6rem, 1.4vw, 0.68rem)',
+                      color: 'var(--fg-subtle)',
+                      letterSpacing: '0.1em',
+                      marginTop: '0.5rem',
+                    }}>
+                      {stat.label.toUpperCase()}
+                    </div>
+                  </div>
+                  {/* Back — description, always dark text on green bg */}
+                  <div className="flip-back" style={{ textAlign: 'center', gap: '0.4rem' }}>
+                    <div style={{
+                      fontSize: 'clamp(1.4rem, 3vw, 1.9rem)',
+                      fontFamily: 'var(--font-display)',
+                      fontWeight: 800,
+                      color: '#07211c',
+                    }}>{stat.value}</div>
+                    <div style={{
+                      fontSize: 'clamp(0.72rem, 1.6vw, 0.8rem)',
+                      fontWeight: 600,
+                      color: '#07211c',
+                      letterSpacing: '0.05em',
+                    }}>{stat.label}</div>
+                    {stat.detail && (
+                      <div style={{
+                        fontSize: 'clamp(0.62rem, 1.3vw, 0.7rem)',
+                        color: '#07211c',
+                        opacity: 0.75,
+                        marginTop: '0.25rem',
+                        lineHeight: 1.4,
+                      }}>{stat.detail}</div>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
