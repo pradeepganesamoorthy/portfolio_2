@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
 
   const items = await prisma.portfolio.findMany({
     where,
-    orderBy: { updatedAt: 'asc' },
+    orderBy: [{ order: 'desc' }, { updatedAt: 'asc' }],
   })
 
   const result = items.map(item => ({

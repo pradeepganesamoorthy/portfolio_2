@@ -11,7 +11,7 @@ export function Contact() {
   const links = [
     { label: 'Email', value: contact?.email, href: `mailto:${contact?.email}`, icon: '✉', color: '#ff6b6b' },
     { label: 'Phone', value: contact?.phone, href: `tel:${contact?.phone}`, icon: '◉', color: '#6bcb77' },
-    { label: 'LinkedIn', value: 'linkedin.com/in/pradeepganesamoorthy', href: contact?.linkedin, icon: 'LI', color: '#4d96ff' },
+    { label: 'LinkedIn', value: 'linkedin.com/in/pradeepganesamoorthy', href: contact?.linkedin, icon: 'LI', color: 'var(--theme-secondary,#237a57)' },
   ]
 
   return (
@@ -20,7 +20,7 @@ export function Contact() {
       <div style={{
         position: 'absolute', top: '-20%', left: '50%', transform: 'translateX(-50%)',
         width: '700px', height: '500px', borderRadius: '50%',
-        background: 'radial-gradient(ellipse, rgba(199,125,255,0.12) 0%, rgba(77,150,255,0.08) 50%, transparent 70%)',
+        background: 'radial-gradient(ellipse, rgba(61,220,151,0.12) 0%, rgba(35,122,87,0.08) 50%, transparent 70%)',
         filter: 'blur(60px)', pointerEvents: 'none',
       }} />
 

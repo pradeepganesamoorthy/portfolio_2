@@ -12,7 +12,7 @@ const LANG_COLORS: Record<string, string> = {
   SQL: '#e38c00', Shell: '#89e051', HTML: '#e34c26', Java: '#b07219',
 }
 
-const CARD_ACCENTS = ['#ff6b6b', '#4d96ff', '#6bcb77', '#c77dff', '#ffd93d', '#ff9a3c']
+const CARD_ACCENTS = ['#ff6b6b', 'var(--theme-secondary,#237a57)', '#6bcb77', 'var(--theme-primary,#3ddc97)', '#ffd93d', '#ff9a3c']
 
 export function GitHub() {
   const [repos, setRepos] = useState<Repo[]>([])
@@ -47,7 +47,7 @@ export function GitHub() {
       <div style={{
         position: 'absolute', bottom: '10%', right: '5%',
         width: '350px', height: '350px', borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(77,150,255,0.08) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, rgba(35,122,87,0.08) 0%, transparent 70%)',
         filter: 'blur(40px)', pointerEvents: 'none',
       }} />
 
