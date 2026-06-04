@@ -72,18 +72,22 @@ export function Experience() {
                       zIndex: 2,
                     }} />
 
-                    <div className="card" style={{
-                      borderLeft: isHovered ? `2px solid ${color}` : '2px solid transparent',
-                      transition: 'border-color 0.3s',
-                    }}>
+                    <div
+                      className={`card${isHovered ? ' card-hovered' : ''}`}
+                      style={{
+                        borderLeft: isHovered ? `2px solid ${color}` : '2px solid transparent',
+                        transition: 'border-color 0.3s',
+                        background: 'var(--bg-card)',  /* always keep bg so text stays visible */
+                      }}
+                    >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '1rem' }}>
                         <div>
-                          <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.2rem' }}>{v?.title}</h3>
+                          <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.2rem', color: isHovered ? '#111111' : 'var(--fg)', transition: 'color 0.2s ease' }}>{v?.title}</h3>
                           <p style={{ color, fontWeight: 600, fontSize: '0.95rem', fontFamily: 'var(--font-display)' }}>
                             {v?.company}
                           </p>
                           {v?.project && (
-                            <p style={{ color: 'var(--fg-muted)', fontSize: '0.82rem', fontFamily: 'var(--font-mono)' }}>{v.project}</p>
+                            <p style={{ color: isHovered ? '#111111' : 'var(--fg-muted)', fontSize: '0.82rem', fontFamily: 'var(--font-mono)', transition: 'color 0.2s ease' }}>{v.project}</p>
                           )}
                         </div>
                         <span style={{
@@ -98,7 +102,12 @@ export function Experience() {
                       </div>
                       <ul style={{ paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
                         {v?.bullets?.map((b: string, i: number) => (
-                          <li key={i} style={{ fontSize: '0.88rem', color: 'var(--fg-muted)', lineHeight: 1.65 }}>{b}</li>
+                          <li key={i} style={{
+                            fontSize: '0.88rem',
+                            color: isHovered ? '#111111' : 'var(--fg-muted)',
+                            lineHeight: 1.65,
+                            transition: 'color 0.2s ease',
+                          }}>{b}</li>
                         ))}
                       </ul>
                     </div>

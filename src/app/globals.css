@@ -252,10 +252,17 @@ h1.hero-name-last {
   border-color: transparent;
   box-shadow: 0 20px 60px rgba(0,0,0,0.2), 0 0 50px var(--theme-primary,#3ddc97)25;
 }
-/* Ensure card content readable on hover — don't let children go invisible */
-.card:hover *, .card:hover h1, .card:hover h2, .card:hover h3,
-.card:hover p, .card:hover span:not(.gradient-text) {
-  color: inherit;
+/* Card hover — keep card background solid */
+.card:hover {
+  background: var(--bg-card) !important;
+}
+/* Experience section specifically: dark text on hover for all themes */
+#experience .card:hover h3,
+#experience .card:hover h4,
+#experience .card:hover p,
+#experience .card:hover li,
+#experience .card:hover span {
+  color: #111111 !important;
 }
 
 @keyframes rainbowShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
